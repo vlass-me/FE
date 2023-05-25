@@ -9,6 +9,7 @@ import Record from "./pages/Record";
 import Study from "./pages/Study";
 import Settings from "./pages/Settings";
 import Upload from "./pages/Upload";
+
 function App() {
   return (
     <>
