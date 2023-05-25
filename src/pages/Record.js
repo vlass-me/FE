@@ -1,10 +1,78 @@
 import styled from "styled-components";
 import Modal from "../components/RecordModal";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import RecordModalImg from "../assets/RecordModal.svg";
-const Record = () => {
-  const [showModal, setShowModal] = useState(false);
+import useRecorder from "../hooks/useRecorder";
+import SttService from '../services/stt.service';
+import useEventSource from '../hooks/useEventSource';
+import { StereoAudioRecorder } from 'recordrtc';
 
+const Record = () => {
+  const speechRetRef = useRef();
+  const STREAM_URL_PREFIX = 'http://localhost:8089/stream/'
+  let [userId, setUserId] = useState('sample_user');
+  let [sessionId, setSessionId] = useState('INVALID');
+  let [url, setUrl] = useState(STREAM_URL_PREFIX+sessionId)
+  
+  useEffect(() => {
+        if(sessionId == 'INVALID'){
+            SttService.createSession(userId)
+                .then((res) => {
+                    let newSessionId = res?.data?.sessionId
+                    if(newSessionId == undefined){
+                        console.log("err")
+                        return
+                    }
+                    setSessionId(newSessionId)
+                    setUrl(STREAM_URL_PREFIX+newSessionId)
+                })
+                .catch((e) => console.log(e));
+        }
+        console.log(sessionId)
+    }, [userId]);
+   const { dataRef, setCallback } = useEventSource(url);
+    const startButtonRef = useRef();
+    const stopButtonRef = useRef();
+    const recorderOnDataAvailable = (blob: Blob) => {
+        console.log('recorderOnDataAvailable')
+        SttService.upload(blob, 'fooo', userId, sessionId)
+            .then((res) => {})
+            .catch((e) => console.log("upload error"));
+        return
+    }
+const { startRecording, stopRecording, mediaStream } = useRecorder({
+        mimeType: 'audio/wav',
+        type: "audio",
+        recorderType: StereoAudioRecorder,
+        numberOfAudioChannels: 1,
+        desiredSampRate: 16000,
+        timeSlice: 3000,
+        ondataavailable: recorderOnDataAvailable
+    }, recorderOnDataAvailable);
+     const startRecordingWrapper = () => {
+        startRecording()
+         // TODO
+        // startButtonRef.current.hidden = true
+        // stopButtonRef.current.hidden = false
+     }
+     const stopRecordingWrapper = () => {
+        stopRecording()
+        // startButtonRef.current.hidden = false
+        // stopButtonRef.current.hidden = true
+     }
+useEffect(() => {
+         console.log(setCallback)
+        if(setCallback == undefined){
+            return;
+        }
+        setCallback((data) => {
+            console.log('callback')
+            console.log(data)
+            speechRetRef.current.innerHTML = data
+        });
+    }, [setCallback]);
+  const [showModal, setShowModal] = useState(false);
+  
   const handleOpenModal = () => {
     setShowModal(true);
   };
@@ -29,8 +97,8 @@ const Record = () => {
         </InfoContainer>
         <RecordArea>
           <Text>🎙️ 실시간 녹음</Text>
-          <RecordBox></RecordBox>
-          <RecordButton>녹음 시작</RecordButton>
+          <RecordBox ref={speechRetRef}></RecordBox>
+          <RecordButton ref={startButtonRef} onClick={startRecordingWrapper}>녹음 시작</RecordButton>
         </RecordArea>
         <SummaryArea>
           <SummaryInfo>
