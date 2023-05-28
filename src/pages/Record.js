@@ -7,14 +7,26 @@ import SttService from '../services/stt.service';
 import useEventSource from '../hooks/useEventSource';
 import { StereoAudioRecorder } from 'recordrtc';
 
+// const STREAM_URL_PREFIX = 'http://34.22.68.57/stream/'
+const STREAM_URL_PREFIX = 'https://vlasstom.limdongjin.com/stream/'
+// const STREAM_URL_PREFIX = 'http://localhost:8089/stream/'
+
 const Record = () => {
   const speechRetRef = useRef();
-  const STREAM_URL_PREFIX = 'http://localhost:8089/stream/'
-  let [userId, setUserId] = useState('sample_user');
+  let [userId, setUserId] = useState('INVALID');
   let [sessionId, setSessionId] = useState('INVALID');
   let [url, setUrl] = useState(STREAM_URL_PREFIX+sessionId)
+  let [lang, setLang] = useState('ko') 
   
   useEffect(() => {
+        if(userId == 'INVALID') {
+            var storedUid = localStorage.getItem('userId')
+            if(storedUid == null || storedUid == undefined || storedUid.trim() == ''){
+                alert('errrr')
+                return
+            }
+            setUserId(storedUid)
+        }
         if(sessionId == 'INVALID'){
             SttService.createSession(userId)
                 .then((res) => {
@@ -31,11 +43,11 @@ const Record = () => {
         console.log(sessionId)
     }, [userId]);
    const { dataRef, setCallback } = useEventSource(url);
-    const startButtonRef = useRef();
-    const stopButtonRef = useRef();
-    const recorderOnDataAvailable = (blob: Blob) => {
+   const startButtonRef = useRef();
+   const stopButtonRef = useRef();
+   const recorderOnDataAvailable = (blob: Blob) => {
         console.log('recorderOnDataAvailable')
-        SttService.upload(blob, 'fooo', userId, sessionId)
+        SttService.upload(blob, 'fooo', userId, sessionId, lang)
             .then((res) => {})
             .catch((e) => console.log("upload error"));
         return
@@ -46,7 +58,7 @@ const { startRecording, stopRecording, mediaStream } = useRecorder({
         recorderType: StereoAudioRecorder,
         numberOfAudioChannels: 1,
         desiredSampRate: 16000,
-        timeSlice: 3000,
+        timeSlice: 1000,
         ondataavailable: recorderOnDataAvailable
     }, recorderOnDataAvailable);
      const startRecordingWrapper = () => {
@@ -80,7 +92,7 @@ useEffect(() => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
+  
   return (
     <>
       <RecordContainer>
@@ -91,6 +103,7 @@ useEffect(() => {
               <Tags>#수업</Tags>
               <Tags>#서강대학교</Tags>
               <Tags>#OS</Tags>
+              <Tags onClick={() => {setLang('en');}}>#{lang}</Tags>
             </TagArea>
             <Button>강의자료 다시 업로드</Button>
           </OtherInfo>

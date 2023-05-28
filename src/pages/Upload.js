@@ -2,6 +2,8 @@ import styled from "styled-components";
 import UploadImg from "../assets/UploadImg.svg";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+
 const Upload = () => {
   const fileInputRef = useRef();
 
@@ -16,6 +18,20 @@ const Upload = () => {
 
   const navigate = useNavigate();
   const gotoRecord = () => {
+    const BASE_URL = 'http://localhot:8088';
+    const token = localStorage.getItem('token')
+    if(token == undefined || token == null || token.trim() == ''){
+        alert("error")
+        return
+    }
+    const api = axios.create({
+        baseURL: BASE_URL,
+        headers: {
+           'Authorization': 'Bearer ' + token,
+        }
+    })
+    // TODO pdf upload api  
+    // TODO hashtag upload api
     navigate("/record");
   };
   const [tags, setTags] = useState([]);
