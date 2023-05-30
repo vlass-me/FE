@@ -1,17 +1,43 @@
 import styled from "styled-components";
 import UploadImg from "../assets/UploadImg.svg";
+import UploadFileImg from "../assets/UploadFileImg.svg";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 const Upload = () => {
   const fileInputRef = useRef();
+  const [isFileUploaded, setIsFileUploaded] = useState(false);
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    console.log(file);
+    let file;
+    if (e.dataTransfer) {
+      file = e.dataTransfer.files[0];
+    } else {
+      file = e.target.files[0];
+    }
+    if (file) {
+      setIsFileUploaded(true);
+      console.log(file);
+    }
   };
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.currentTarget.style.backgroundColor = "#f0f0f0";
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.currentTarget.style.backgroundColor = "";
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    handleFileUpload(e);
+    e.currentTarget.style.backgroundColor = "";
   };
 
   const navigate = useNavigate();
@@ -44,18 +70,33 @@ const Upload = () => {
             <Text>강의자료 업로드하기</Text>
             <SmallText>강의자료는 pdf를 지원합니다.</SmallText>
           </OtherInfo>
-          <UploadBox>
-            <UploadBlue onClick={handleUploadClick}>
-              <input
-                type="file"
-                accept=".pdf"
-                style={{ display: "none" }}
-                ref={fileInputRef}
-                onChange={handleFileUpload}
-              />
-              <UploadPic src={UploadImg}></UploadPic>
-              <UploadText>업로드</UploadText>
-            </UploadBlue>
+          <UploadBox
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onDragLeave={handleDragLeave}
+          >
+            {!isFileUploaded ? (
+              <>
+                <UploadPic src={UploadFileImg} />
+                <UploadBlue onClick={handleUploadClick}>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    style={{ display: "none" }}
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                  />
+                  <UploadPic src={UploadImg}></UploadPic>
+                  <UploadText>업로드</UploadText>
+                </UploadBlue>
+                <UploadPlaceholder>
+                  또는 <br />
+                  강의자료를 끌어서 놓아주세요!
+                </UploadPlaceholder>
+              </>
+            ) : (
+              <></>
+            )}
           </UploadBox>
         </UploadArea>
         <HashtagArea>
@@ -143,6 +184,7 @@ const UploadBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 `;
 
 const HashtagArea = styled.div`
@@ -153,6 +195,7 @@ const HashtagArea = styled.div`
 `;
 
 const Tag = styled.div`
+  box-sizing: border-box;
   background-color: #f2e9f8;
   border-radius: 5px;
   color: #914688;
@@ -161,6 +204,8 @@ const Tag = styled.div`
   display: flex;
   align-items: center;
   margin-right: 5px;
+  padding-left: 3px;
+  padding-right: 3px;
 `;
 
 const Input = styled.input`
@@ -183,6 +228,7 @@ const ResetButton = styled.button`
   text-align: right;
   color: #81868a;
   cursor: pointer;
+  text-decoration: underline;
 `;
 
 const UploadButton = styled.div`
@@ -207,6 +253,9 @@ const UploadBlue = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;
 
 const UploadPic = styled.img``;
@@ -219,4 +268,14 @@ const UploadText = styled.div`
   color: white;
   font-size: 20px;
   font-weight: 700;
+`;
+
+const UploadPlaceholder = styled.div`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 23px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #81868a;
 `;
