@@ -2,16 +2,54 @@ import styled from "styled-components";
 import FolderImg from "../assets/FolderImg.svg";
 import FileImg from "../assets/FileImg.svg";
 import StudyModalImg from "../assets/StudyModal.svg";
-import { useState } from "react";
-import Modal from "../components/RecordModal";
+import { useState, useCallback } from "react";
+import Modal from "../components/StudyModal";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
+const File = ({ file, setSelectedFile }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: "file",
+    item: file,
+    end: () => setSelectedFile(file.id),
+    // end: (item, monitor) => {
+    //   const dropResult = monitor.getDropResult();
+    //   if (item && dropResult) {
+    //     setSelectedFile(item);
+    //   }
+    // },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
+  const [, drop] = useDrop(() => ({
+    accept: "file",
+    drop: () => setSelectedFile(file),
+  }));
+
+  return (
+    <FolderFile ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+      <FolderPic src={FileImg} />
+      {file.name}
+    </FolderFile>
+  );
+};
+const initialFiles = [
+  { id: "1", name: "File 1" },
+  { id: "2", name: "File 2" },
+  { id: "3", name: "File 3" },
+];
 
 const Study = () => {
   const [folders, setFolders] = useState(["대외활동"]);
   const [newFolderName, setNewFolderName] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [files, setFiles] = useState(initialFiles);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const handleAddFolder = (event) => {
-    event.preventDefault();
+  const handleAddFolder = (e) => {
+    e.preventDefault();
     setFolders([...folders, newFolderName]);
     setNewFolderName("");
   };
@@ -25,7 +63,7 @@ const Study = () => {
   };
 
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <StudyContainer>
         <Title>🗂️ 전체 요약본</Title>
         <HashtagArea>
@@ -46,18 +84,25 @@ const Study = () => {
           </FolderArea>
           <TitleInfo>📝 파일</TitleInfo>
           <FileArea>
-            <FolderFile>
-              <FolderPic src={FileImg} />
-              0418_1201
-            </FolderFile>
+            {files.map((file) => (
+              <File
+                key={file.id}
+                file={file}
+                setSelectedFile={setSelectedFile}
+              />
+            ))}
           </FileArea>
         </ContentsArea>
       </StudyContainer>
       <Button onClick={handleOpenModal}>
         <StudyModalPic src={StudyModalImg} />
       </Button>
-      <Modal show={showModal} handleClose={handleCloseModal}></Modal>
-    </>
+      <Modal
+        show={showModal}
+        selectedFile={selectedFile}
+        handleClose={handleCloseModal}
+      ></Modal>
+    </DndProvider>
   );
 };
 
@@ -125,6 +170,8 @@ const FileArea = styled.div`
   height: 70%;
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
+  position: relative;
 `;
 
 const TitleInfo = styled.div`

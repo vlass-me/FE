@@ -3,17 +3,12 @@ import logoImg from "../assets/bigLogo.svg";
 import logoText from "../assets/bigText.svg";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import axios from 'axios';
-
-const TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3NzE0NjI1NzQsInVzZXIiOiJhZG1pbiJ9.AHSw4piFuK1ZeoIjuKDnWpsdS3O3qwvJvSiwF0j8g70"
-const TEST_SECRET_KEY = "your_secret_key"
-// const BASE_URL = 'http://localhost:8088'
-const BASE_URL = 'http://34.64.33.21'
+const TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3NzE0NjI1NzQsInVzZXIiOiJhZG1pbiJ9.AHSw4piFuK1ZeoIjuKDnWpsdS3O3qwvJvSiwF0j8g70";
+const TEST_SECRET_KEY = "your_secret_key";
 
 const Login = () => {
   const navigate = useNavigate();
-
   const [info, setInfo] = useState({
     username: "",
     password: "",
@@ -27,20 +22,17 @@ const Login = () => {
       [id]: value,
     });
   };
-  
   const tryLogin = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('username', info.username)
     formData.append('password', info.password)
-    
+
     ///// for TEST
-    //if(BASE_URL.includes("http://localhost") && info.username == "admin" && info.password == "admin") {
-        localStorage.setItem('token', TEST_TOKEN)
-        localStorage.setItem('userId', 'admin')
-        navigate("/")
-        return
-    //}
+    localStorage.setItem('token', TEST_TOKEN)
+    localStorage.setItem('userId', 'admin')
+    navigate("/")
+    return
     //////
     const axiosReqConfig: AxiosRequestConfig = {
       headers: {
@@ -50,6 +42,7 @@ const Login = () => {
       // withCredentials: false // true
     }
     axios.defaults.headers['Access-Control-Allow-Origin'] = '*';
+    var BASE_URL = 'aa'    
     axios.post(BASE_URL+'/api/login', formData, axiosReqConfig)
         .then(response => {
             console.log("succ login")
@@ -57,9 +50,8 @@ const Login = () => {
             localStorage.setItem('token', response.data.token)
             navigate("/")
         });
-   
+
   }
- 
   return (
     <>
       <LoginContainer>

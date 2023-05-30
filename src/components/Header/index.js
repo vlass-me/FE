@@ -16,8 +16,8 @@ export const Header = () => {
   const [isStudy, setisStudy] = useState(false);
   const [isSettings, setisSettings] = useState(false);
   const [isUpload, setisUpload] = useState(false);
-  const [userId, setUserId] = useState('');
-
+  const [userId, setUserId] = useState('')
+  
   useEffect(() => {
     location.pathname === "/login" ? setisLogin(true) : setisLogin(false);
     var token = localStorage.getItem("token")
@@ -88,7 +88,7 @@ export const Header = () => {
             </LogoContainer>
             <ProfileContainer>
               <ButtonContainer onClick={gotoLogin}>
-                <Button> { userId != '' ?  userId : "로그인" }</Button>
+                <Button>{ userId != '' ?  userId : "로그인" }</Button>
               </ButtonContainer>
               <ProfilePic src={anonymousImg}></ProfilePic>
             </ProfileContainer>
