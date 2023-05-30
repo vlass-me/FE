@@ -1581,9 +1581,9 @@
   "resolved" "https://registry.npmjs.org/@next/env/-/env-13.4.2.tgz"
   "version" "13.4.2"
 
-"@next/swc-darwin-x64@13.4.2":
-  "integrity" "sha512-iZuYr7ZvGLPjPmfhhMl0ISm+z8EiyLBC1bLyFwGBxkWmPXqdJ60mzuTaDSr5WezDwv0fz32HB7JHmRC6JVHSZg=="
-  "resolved" "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-13.4.2.tgz"
+"@next/swc-darwin-arm64@13.4.2":
+  "integrity" "sha512-6BBlqGu3ewgJflv9iLCwO1v1hqlecaIH2AotpKfVUEzUxuuDNJQZ2a4KLb4MBl8T9/vca1YuWhSqtbF6ZuUJJw=="
+  "resolved" "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-13.4.2.tgz"
   "version" "13.4.2"
 
 "@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents.3":

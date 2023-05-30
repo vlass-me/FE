@@ -6,6 +6,7 @@ import useRecorder from "../hooks/useRecorder";
 import SttService from "../services/stt.service";
 import useEventSource from "../hooks/useEventSource";
 import { StereoAudioRecorder } from "recordrtc";
+
 import {
   Link,
 } from 'react-router-dom';
@@ -63,8 +64,10 @@ const Record = () => {
       recorderType: StereoAudioRecorder,
       numberOfAudioChannels: 1,
       desiredSampRate: 16000,
+
       timeSlice: 1000,
       bufferSize: 16384,
+
       ondataavailable: recorderOnDataAvailable,
     },
     recorderOnDataAvailable
@@ -132,8 +135,10 @@ const Record = () => {
         </InfoContainer>
         <RecordArea>
           <Text>🎙️ 실시간 녹음</Text>
+
           <Link to={saveUrl} target="_blank" download>download</Link>
           <RecordBox ref={speechRetRef}>
+
           </RecordBox>
           {!isRecording && (
             <RecordButton ref={startButtonRef} onClick={startRecordingWrapper}>
