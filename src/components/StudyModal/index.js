@@ -6,6 +6,7 @@ import GPTLogo from "../../assets/GPTLogo.svg";
 import AnonymousImg from "../../assets/anonymous.svg";
 import QuizImg from "../../assets/QuizImg.svg";
 import TrashImg from "../../assets/Trash.svg";
+import RefreshImg from "../../assets/Refresh.svg";
 
 const Modal = ({ handleClose, show, selectedFile }) => {
   const [input, setInput] = useState("");
@@ -17,6 +18,10 @@ const Modal = ({ handleClose, show, selectedFile }) => {
     console.log(choiceNumber);
     setSelectedChoice(choiceNumber);
   };
+
+  const handleRefresh = () => {};
+
+  const handleReset = () => {};
 
   useEffect(() => {
     setHasSelectedFile(!!selectedFile);
@@ -71,17 +76,17 @@ const Modal = ({ handleClose, show, selectedFile }) => {
                         Active Publics
                       </ChoiceContent>
                     </Choices>
-                    <Choices
+                    <CorrectChoices
                       isSelected={selectedChoice === 3}
                       onClick={() => handleChoiceClick(3)}
                     >
-                      <ChoiceNumber isSelected={selectedChoice === 3}>
+                      <CorrectChoiceNumber isSelected={selectedChoice === 3}>
                         3
-                      </ChoiceNumber>
-                      <ChoiceContent isSelected={selectedChoice === 3}>
+                      </CorrectChoiceNumber>
+                      <CorrectChoiceContent isSelected={selectedChoice === 3}>
                         Active Publics
-                      </ChoiceContent>
-                    </Choices>
+                      </CorrectChoiceContent>
+                    </CorrectChoices>
                     <Choices
                       isSelected={selectedChoice === 4}
                       onClick={() => handleChoiceClick(4)}
@@ -106,10 +111,31 @@ const Modal = ({ handleClose, show, selectedFile }) => {
                         </AnswerSmallText>
                       </AnswerBox>
                     </AnswerArea>
+                    <RefreshButton onClick={handleRefresh}>
+                      <RefreshPic src={RefreshImg} />
+                      다른 문제 풀어보기
+                    </RefreshButton>
                   </>
                 ) : (
-                  <></>
+                  <>
+                    <AnswerArea>
+                      <LogoPic src={GPTLogo} />
+                      <AnswerBox>
+                        <AnswerBigText>
+                          아쉽지만 오답이에요. 정답은 3. Lazy Publics입니다.
+                        </AnswerBigText>
+                        <AnswerSmallText>
+                          출처: [공공외교] CH03.pdf 14쪽
+                        </AnswerSmallText>
+                      </AnswerBox>
+                    </AnswerArea>
+                    <RefreshButton onClick={handleRefresh}>
+                      <RefreshPic src={RefreshImg} />
+                      다른 문제 풀어보기
+                    </RefreshButton>
+                  </>
                 )}
+                <RefreshButton onClick={handleReset}>초기화</RefreshButton>
               </>
             ) : (
               <QuizBox onClick={handleQuizBoxClick}>
@@ -267,6 +293,39 @@ const ChoiceBox = styled.div`
 `;
 
 const Choices = styled.div`
+  background: ${({ isSelected }) => (isSelected ? "#F2E9F8" : "#ffffff")};
+  border: ${({ isSelected }) =>
+    isSelected ? "0.5px solid #914688" : "0.5px solid #81868a"};
+  border-radius: 5px;
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin-top: 5px;
+  padding: 5px;
+`;
+
+const ChoiceNumber = styled.div`
+  background: ${({ isSelected }) => (isSelected ? "#914688" : "#e6e6e6")};
+  border-radius: 10px;
+  width: 40%;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 24px;
+  text-align: center;
+  color: ${({ isSelected }) => (isSelected ? "#ffffff" : "#81868a")};
+`;
+
+const ChoiceContent = styled.div`
+  color: ${({ isSelected }) => (isSelected ? "#914688" : "#000000")};
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+`;
+
+const CorrectChoices = styled.div`
   background: ${({ isSelected }) => (isSelected ? "#E8F0FE" : "#ffffff")};
   border: ${({ isSelected }) =>
     isSelected ? "0.5px solid #1e70f6" : "0.5px solid #81868a"};
@@ -279,7 +338,7 @@ const Choices = styled.div`
   padding: 5px;
 `;
 
-const ChoiceNumber = styled.div`
+const CorrectChoiceNumber = styled.div`
   background: ${({ isSelected }) => (isSelected ? "#1E70F6" : "#e6e6e6")};
   border-radius: 10px;
   width: 40%;
@@ -290,7 +349,7 @@ const ChoiceNumber = styled.div`
   color: ${({ isSelected }) => (isSelected ? "#ffffff" : "#81868a")};
 `;
 
-const ChoiceContent = styled.div`
+const CorrectChoiceContent = styled.div`
   color: ${({ isSelected }) => (isSelected ? "#1E70F6" : "#000000")};
   font-weight: 500;
   font-size: 12px;
@@ -320,3 +379,16 @@ const AnswerSmallText = styled.div`
   line-height: 17px;
   color: #81868a;
 `;
+
+const RefreshButton = styled.div`
+  font-size: 12px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  text-decoration-line: underline;
+  color: #676769;
+  cursor: pointer;
+  margin-top: 8px;
+`;
+
+const RefreshPic = styled.img``;
