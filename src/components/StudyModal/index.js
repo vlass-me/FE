@@ -14,6 +14,7 @@ const Modal = ({ handleClose, show, selectedFile }) => {
   const [selectedChoice, setSelectedChoice] = useState(null);
 
   const handleChoiceClick = (choiceNumber) => {
+    console.log(choiceNumber);
     setSelectedChoice(choiceNumber);
   };
 
@@ -48,44 +49,67 @@ const Modal = ({ handleClose, show, selectedFile }) => {
                 </AnswerArea>
                 <ChoiceBoxWrapper>
                   <ChoiceBox>
-                    <Choices>
-                      <ChoiceNumber
-                        isSelected={selectedChoice === 1}
-                        onClick={() => handleChoiceClick(1)}
-                      >
+                    <Choices
+                      isSelected={selectedChoice === 1}
+                      onClick={() => handleChoiceClick(1)}
+                    >
+                      <ChoiceNumber isSelected={selectedChoice === 1}>
                         1
                       </ChoiceNumber>
-                      <ChoiceContent>Active Publics</ChoiceContent>
+                      <ChoiceContent isSelected={selectedChoice === 1}>
+                        Active Publics
+                      </ChoiceContent>
                     </Choices>
-                    <Choices>
-                      <ChoiceNumber
-                        isSelected={selectedChoice === 2}
-                        onClick={() => handleChoiceClick(2)}
-                      >
+                    <Choices
+                      isSelected={selectedChoice === 2}
+                      onClick={() => handleChoiceClick(2)}
+                    >
+                      <ChoiceNumber isSelected={selectedChoice === 2}>
                         2
                       </ChoiceNumber>
-                      <ChoiceContent>Active Publics</ChoiceContent>
+                      <ChoiceContent isSelected={selectedChoice === 2}>
+                        Active Publics
+                      </ChoiceContent>
                     </Choices>
-                    <Choices>
-                      <ChoiceNumber
-                        isSelected={selectedChoice === 3}
-                        onClick={() => handleChoiceClick(3)}
-                      >
+                    <Choices
+                      isSelected={selectedChoice === 3}
+                      onClick={() => handleChoiceClick(3)}
+                    >
+                      <ChoiceNumber isSelected={selectedChoice === 3}>
                         3
                       </ChoiceNumber>
-                      <ChoiceContent>Active Publics</ChoiceContent>
+                      <ChoiceContent isSelected={selectedChoice === 3}>
+                        Active Publics
+                      </ChoiceContent>
                     </Choices>
-                    <Choices>
-                      <ChoiceNumber
-                        isSelected={selectedChoice === 4}
-                        onClick={() => handleChoiceClick(4)}
-                      >
+                    <Choices
+                      isSelected={selectedChoice === 4}
+                      onClick={() => handleChoiceClick(4)}
+                    >
+                      <ChoiceNumber isSelected={selectedChoice === 4}>
                         4
                       </ChoiceNumber>
-                      <ChoiceContent>Active Publics</ChoiceContent>
+                      <ChoiceContent isSelected={selectedChoice === 4}>
+                        Active Publics
+                      </ChoiceContent>
                     </Choices>
                   </ChoiceBox>
                 </ChoiceBoxWrapper>
+                {selectedChoice === 3 ? (
+                  <>
+                    <AnswerArea>
+                      <LogoPic src={GPTLogo} />
+                      <AnswerBox>
+                        <AnswerBigText>정답입니다!</AnswerBigText>
+                        <AnswerSmallText>
+                          출처: [공공외교] CH03.pdf 14쪽
+                        </AnswerSmallText>
+                      </AnswerBox>
+                    </AnswerArea>
+                  </>
+                ) : (
+                  <></>
+                )}
               </>
             ) : (
               <QuizBox onClick={handleQuizBoxClick}>
@@ -231,6 +255,8 @@ const AnswerBox = styled.div`
   font-size: 12px;
   line-height: 17px;
   width: 85%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ChoiceBox = styled.div`
@@ -242,7 +268,8 @@ const ChoiceBox = styled.div`
 
 const Choices = styled.div`
   background: ${({ isSelected }) => (isSelected ? "#E8F0FE" : "#ffffff")};
-  border: 0.5px solid #81868a;
+  border: ${({ isSelected }) =>
+    isSelected ? "0.5px solid #1e70f6" : "0.5px solid #81868a"};
   border-radius: 5px;
   width: 48%;
   display: flex;
@@ -253,23 +280,23 @@ const Choices = styled.div`
 `;
 
 const ChoiceNumber = styled.div`
-  background: #e6e6e6;
+  background: ${({ isSelected }) => (isSelected ? "#1E70F6" : "#e6e6e6")};
   border-radius: 10px;
   width: 40%;
   font-weight: 700;
   font-size: 10px;
   line-height: 24px;
   text-align: center;
-  color: #81868a;
+  color: ${({ isSelected }) => (isSelected ? "#ffffff" : "#81868a")};
 `;
 
 const ChoiceContent = styled.div`
+  color: ${({ isSelected }) => (isSelected ? "#1E70F6" : "#000000")};
   font-weight: 500;
   font-size: 12px;
   line-height: 24px;
   display: flex;
   align-items: center;
-  color: #000000;
 `;
 
 const ChoiceBoxWrapper = styled.div`
@@ -278,4 +305,18 @@ const ChoiceBoxWrapper = styled.div`
   justify-content: end;
   box-sizing: border-box;
   padding: 10px;
+`;
+
+const AnswerBigText = styled.div`
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 17px;
+  color: #000000;
+`;
+
+const AnswerSmallText = styled.div`
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 17px;
+  color: #81868a;
 `;
