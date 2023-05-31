@@ -7,26 +7,41 @@ import SttService from "../services/stt.service";
 import useEventSource from "../hooks/useEventSource";
 import { StereoAudioRecorder } from "recordrtc";
 
+import {
+  Link,
+} from 'react-router-dom';
+const STREAM_URL_PREFIX = 'https://vlasstom.limdongjin.com/stream/'
+
 const Record = () => {
   const speechRetRef = useRef();
-  const STREAM_URL_PREFIX = "http://localhost:8089/stream/";
-  let [userId, setUserId] = useState("sample_user");
+  let [userId, setUserId] = useState("INVALID");
   let [sessionId, setSessionId] = useState("INVALID");
   let [url, setUrl] = useState(STREAM_URL_PREFIX + sessionId);
-
+  let [saveUrl, setSaveUrl] = useState('')
+  let [lang, setLang] = useState('ko')
+  
   useEffect(() => {
-    if (sessionId == "INVALID") {
-      SttService.createSession(userId)
-        .then((res) => {
-          let newSessionId = res?.data?.sessionId;
-          if (newSessionId == undefined) {
-            console.log("err");
-            return;
-          }
-          setSessionId(newSessionId);
-          setUrl(STREAM_URL_PREFIX + newSessionId);
-        })
-        .catch((e) => console.log(e));
+    if(userId == 'INVALID') {
+            var storedUid = localStorage.getItem('userId')
+            if(storedUid == null || storedUid == undefined || storedUid.trim() == ''){
+                alert('errrr')
+                return
+            }
+            setUserId(storedUid)
+    }
+    if(sessionId == 'INVALID'){
+            SttService.createSession(userId)
+                .then((res) => {
+                    let newSessionId = res?.data?.sessionId
+                    if(newSessionId == undefined){
+                        console.log("err")
+                        return
+                    }
+                    setSessionId(newSessionId)
+                    setUrl(STREAM_URL_PREFIX+newSessionId)
+                    setSaveUrl('https://vlassign.limdongjin.com/api/speech/saveSession/'+newSessionId)
+                })
+                .catch((e) => console.log(e));
     }
     console.log(sessionId);
   }, [userId]);
@@ -37,7 +52,7 @@ const Record = () => {
   const [isPause, setIsPause] = useState(false);
   const recorderOnDataAvailable = (blob: Blob) => {
     console.log("recorderOnDataAvailable");
-    SttService.upload(blob, "fooo", userId, sessionId)
+    SttService.upload(blob, "fooo", userId, sessionId, lang)
       .then((res) => {})
       .catch((e) => console.log("upload error"));
     return;
@@ -49,7 +64,10 @@ const Record = () => {
       recorderType: StereoAudioRecorder,
       numberOfAudioChannels: 1,
       desiredSampRate: 16000,
-      timeSlice: 3000,
+
+      timeSlice: 1000,
+      bufferSize: 16384,
+
       ondataavailable: recorderOnDataAvailable,
     },
     recorderOnDataAvailable
@@ -57,15 +75,10 @@ const Record = () => {
   const startRecordingWrapper = () => {
     startRecording();
     setIsRecording(true);
-    // TODO
-    // startButtonRef.current.hidden = true;
-    // stopButtonRef.current.hidden = false;
   };
   const stopRecordingWrapper = () => {
     stopRecording();
     setIsRecording(false);
-    // startButtonRef.current.hidden = false;
-    // stopButtonRef.current.hidden = true;
   };
   const pauseRecordingWraaper = () => {
     setIsPause(true);
@@ -115,31 +128,17 @@ const Record = () => {
               <Tags>#수업</Tags>
               <Tags>#서강대학교</Tags>
               <Tags>#OS</Tags>
+              <Tags onClick={() => {setLang('en');}}>#{lang}</Tags>
             </TagArea>
             <Button>강의자료 다시 업로드</Button>
           </OtherInfo>
         </InfoContainer>
         <RecordArea>
           <Text>🎙️ 실시간 녹음</Text>
+
+          <Link to={saveUrl} target="_blank" download>download</Link>
           <RecordBox ref={speechRetRef}>
-            시스템에 엘원 엘투 L3 캐시가 있다는 것을 들어보셨을 겁니다 CPU가
-            여기 있으면 L1 L2 L3 캐쉬가 이런 식으로 있습니다 음아 OS가 누마
-            aware라는 것은 코어가 작업을 할 때 CPU의 스레드와 가까운 메모리를
-            배정한다는 겁니다 프로세서 affinity와의 절충안이라고 볼 수 있고 최신
-            OS들은 거의 다 누마 어웨시스템에 엘원 엘투 L3 캐시가 있다는 것을
-            들어보셨을 겁니다 CPU가 여기 있으면 L1 L2 L3 캐쉬가 이런 식으로
-            있습니다 음아 OS가 누마 aware라는 것은 코어가 작업을 할 때 CPU의
-            스레드와 가까운 메모리를 배정한다는 겁니다 프로세서 affinity와의
-            절충안이라고 볼 수 있고 최신 OS들은 거의 다 누마 어웨시스템에 엘원
-            엘투 L3 캐시가 있다는 것을 들어보셨을 겁니다 CPU가 여기 있으면 L1 L2
-            L3 캐쉬가 이런 식으로 있습니다 음아 OS가 누마 aware라는 것은 코어가
-            작업을 할 때 CPU의 스레드와 가까운 메모리를 배정한다는 겁니다
-            프로세서 affinity와의 절충안이라고 볼 수 있고 최신 OS들은 거의 다
-            누마 어웨시스템에 엘원 엘투 L3 캐시가 있다는 것을 들어보셨을 겁니다
-            CPU가 여기 있으면 L1 L2 L3 캐쉬가 이런 식으로 있습니다 음아 OS가
-            누마 aware라는 것은 코어가 작업을 할 때 CPU의 스레드와 가까운
-            메모리를 배정한다는 겁니다 프로세서 affinity와의 절충안이라고 볼 수
-            있고 최신 OS들은 거의 다 누마 어웨
+
           </RecordBox>
           {!isRecording && (
             <RecordButton ref={startButtonRef} onClick={startRecordingWrapper}>

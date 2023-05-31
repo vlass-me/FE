@@ -16,9 +16,18 @@ export const Header = () => {
   const [isStudy, setisStudy] = useState(false);
   const [isSettings, setisSettings] = useState(false);
   const [isUpload, setisUpload] = useState(false);
-
+  const [userId, setUserId] = useState('')
+  
   useEffect(() => {
     location.pathname === "/login" ? setisLogin(true) : setisLogin(false);
+    var token = localStorage.getItem("token")
+    console.log(token)
+    if(token == undefined || token == null || token == ""){
+        // setisLogin(false)
+        return
+    }
+    var userIdd = localStorage.getItem("userId")
+    setUserId(userIdd)
   }, [location.pathname]);
 
   useEffect(() => {
@@ -79,7 +88,7 @@ export const Header = () => {
             </LogoContainer>
             <ProfileContainer>
               <ButtonContainer onClick={gotoLogin}>
-                <Button>로그인</Button>
+                <Button>{ userId != '' ?  userId : "로그인" }</Button>
               </ButtonContainer>
               <ProfilePic src={anonymousImg}></ProfilePic>
             </ProfileContainer>
@@ -94,7 +103,7 @@ export const Header = () => {
             </LogoContainer>
             <ProfileContainer>
               <ButtonContainer onClick={gotoLogin}>
-                <Button>로그인</Button>
+                <Button>{ userId != '' ?  userId : "로그인" }</Button>
               </ButtonContainer>
               <ProfilePic src={anonymousImg}></ProfilePic>
             </ProfileContainer>
