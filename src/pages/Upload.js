@@ -42,10 +42,10 @@ const Upload = () => {
 
   const navigate = useNavigate();
   const gotoRecord = () => {
-    const token = localStorage.getItem('token')
-    if(token == undefined || token == null || token.trim() == ''){
-        alert("error")
-        return
+    const token = localStorage.getItem("token");
+    if (token == undefined || token == null || token.trim() == "") {
+      alert("error");
+      return;
     }
     navigate("/record");
   };

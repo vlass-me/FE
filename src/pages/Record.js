@@ -7,41 +7,46 @@ import SttService from "../services/stt.service";
 import useEventSource from "../hooks/useEventSource";
 import { StereoAudioRecorder } from "recordrtc";
 
-import {
-  Link,
-} from 'react-router-dom';
-const STREAM_URL_PREFIX = 'https://vlasstom.limdongjin.com/stream/'
+import { Link } from "react-router-dom";
+const STREAM_URL_PREFIX = "https://vlasstom.limdongjin.com/stream/";
 
 const Record = () => {
   const speechRetRef = useRef();
   let [userId, setUserId] = useState("INVALID");
   let [sessionId, setSessionId] = useState("INVALID");
   let [url, setUrl] = useState(STREAM_URL_PREFIX + sessionId);
-  let [saveUrl, setSaveUrl] = useState('')
-  let [lang, setLang] = useState('ko')
-  
+  let [saveUrl, setSaveUrl] = useState("");
+  let [lang, setLang] = useState("ko");
+
   useEffect(() => {
-    if(userId == 'INVALID') {
-            var storedUid = localStorage.getItem('userId')
-            if(storedUid == null || storedUid == undefined || storedUid.trim() == ''){
-                alert('errrr')
-                return
-            }
-            setUserId(storedUid)
+    if (userId == "INVALID") {
+      var storedUid = localStorage.getItem("userId");
+      if (
+        storedUid == null ||
+        storedUid == undefined ||
+        storedUid.trim() == ""
+      ) {
+        alert("errrr");
+        return;
+      }
+      setUserId(storedUid);
     }
-    if(sessionId == 'INVALID'){
-            SttService.createSession(userId)
-                .then((res) => {
-                    let newSessionId = res?.data?.sessionId
-                    if(newSessionId == undefined){
-                        console.log("err")
-                        return
-                    }
-                    setSessionId(newSessionId)
-                    setUrl(STREAM_URL_PREFIX+newSessionId)
-                    setSaveUrl('https://vlassign.limdongjin.com/api/speech/saveSession/'+newSessionId)
-                })
-                .catch((e) => console.log(e));
+    if (sessionId == "INVALID") {
+      SttService.createSession(userId)
+        .then((res) => {
+          let newSessionId = res?.data?.sessionId;
+          if (newSessionId == undefined) {
+            console.log("err");
+            return;
+          }
+          setSessionId(newSessionId);
+          setUrl(STREAM_URL_PREFIX + newSessionId);
+          setSaveUrl(
+            "https://vlassign.limdongjin.com/api/speech/saveSession/" +
+              newSessionId
+          );
+        })
+        .catch((e) => console.log(e));
     }
     console.log(sessionId);
   }, [userId]);
@@ -96,6 +101,9 @@ const Record = () => {
       console.log(data);
       speechRetRef.current.innerHTML = data;
     });
+    if (speechRetRef.current) {
+      speechRetRef.current.scrollTop = speechRetRef.current.scrollHeight;
+    }
   }, [setCallback]);
   const [showModal, setShowModal] = useState(false);
 
@@ -128,7 +136,13 @@ const Record = () => {
               <Tags>#수업</Tags>
               <Tags>#서강대학교</Tags>
               <Tags>#OS</Tags>
-              <Tags onClick={() => {setLang('en');}}>#{lang}</Tags>
+              <Tags
+                onClick={() => {
+                  setLang("en");
+                }}
+              >
+                #{lang}
+              </Tags>
             </TagArea>
             <Button>강의자료 다시 업로드</Button>
           </OtherInfo>
@@ -136,10 +150,10 @@ const Record = () => {
         <RecordArea>
           <Text>🎙️ 실시간 녹음</Text>
 
-          <Link to={saveUrl} target="_blank" download>download</Link>
-          <RecordBox ref={speechRetRef}>
-
-          </RecordBox>
+          <Link to={saveUrl} target="_blank" download>
+            download
+          </Link>
+          <RecordBox ref={speechRetRef}></RecordBox>
           {!isRecording && (
             <RecordButton ref={startButtonRef} onClick={startRecordingWrapper}>
               녹음 시작
