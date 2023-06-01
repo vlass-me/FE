@@ -10,6 +10,14 @@ import FourthPart1 from "../assets/FourthPart1.svg";
 import FourthPart2 from "../assets/FourthPart2.svg";
 import FourthPart3 from "../assets/FourthPart3.svg";
 import FourthPart4 from "../assets/FourthPart4.svg";
+import FifthPart1 from "../assets/FifthPart1.svg";
+import FifthPart2 from "../assets/FifthPart2.svg";
+import FifthPart3 from "../assets/FifthPart3.svg";
+import FifthPart4 from "../assets/FifthPart4.svg";
+import SixthPart1 from "../assets/SixthPart1.svg";
+import SeventhPart1 from "../assets/SeventhPart1.svg";
+import SeventhPart2 from "../assets/SeventhPart2.svg";
+import LastPart1 from "../assets/LastPart1.svg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -24,6 +32,10 @@ const Home = () => {
 
   const ToStudy = () => {
     navigate("/study");
+  };
+
+  const ToRecord = () => {
+    navigate("/record");
   };
 
   return (
@@ -57,6 +69,28 @@ const Home = () => {
           <PlainPic src={FourthPart3} />
           <FourthPart4Pic src={FourthPart4} />
         </FourthPart>
+        <FifthPart>
+          <ToStudyButton onClick={ToRecord}>chatGPT 내장</ToStudyButton>
+          <FifthPartPicWrapper>
+            <PlainPic src={FifthPart1} />
+            <FifthAnotherWrapper>
+              <PlainPic src={FifthPart2} />
+              <PlainPic src={FifthPart3} />
+              <AbsolutePic src={FifthPart4} />
+            </FifthAnotherWrapper>
+          </FifthPartPicWrapper>
+        </FifthPart>
+        <SixthPart>
+          <ToStudyButton>퀴즈 생성</ToStudyButton>
+          <PlainPic src={SixthPart1} />
+        </SixthPart>
+        <SeventhPart>
+          <PlainPic src={SeventhPart1} />
+          <PlainPic src={SeventhPart2} />
+        </SeventhPart>
+        <SecondPart>
+          <PlainPic src={LastPart1} />
+        </SecondPart>
       </HomeContainer>
     </>
   );
@@ -202,4 +236,52 @@ const TwoPicWrapper = styled.div`
 
 const FourthPart4Pic = styled.img`
   height: 180px;
+`;
+
+const FifthPart = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+  position: relative;
+`;
+
+const FifthPartPicWrapper = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+const FifthAnotherWrapper = styled.div`
+  margin-top: 20px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+`;
+
+const AbsolutePic = styled.img`
+  position: absolute;
+  bottom: -158%;
+`;
+
+const SixthPart = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 50px;
+  background: linear-gradient(to top, #f4f6fb 40%, transparent 50%);
+`;
+
+const SeventhPart = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 200px;
+  justify-content: space-around;
+  margin-top: 100px;
+  align-items: start;
 `;
